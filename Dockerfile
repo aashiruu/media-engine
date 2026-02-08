@@ -2,8 +2,8 @@ FROM python:3.9-slim
 
 WORKDIR /app
 
-# Install dependencies
-RUN pip install fastapi uvicorn psycopg2-binary
+# Install dependencies (added redis and celery)
+RUN pip install fastapi uvicorn psycopg2-binary redis celery
 
 # Copy code
 COPY main.py .

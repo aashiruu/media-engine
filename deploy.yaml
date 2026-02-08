@@ -1,0 +1,55 @@
+# --- The Application ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: media-engine
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: media-engine
+  template:
+    metadata:
+      labels:
+        app: media-engine
+    spec:
+      containers:
+        - name: media-engine
+          image: media-engine:v1
+          imagePullPolicy: Never  # <--- CRITICAL for local Kind images
+          ports:
+            - containerPort: 80
+          env:
+            - name: DB_HOST
+              value: "postgres-service"
+            - name: DB_PASSWORD
+              value: "supersecretpassword"
+---
+# --- The Internal Network ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: media-engine
+spec:
+  selector:
+    app: media-engine
+  ports:
+    - port: 80
+      targetPort: 80
+---
+# --- The Public Route (Traefik) ---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: media-engine-route
+  namespace: default
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: PathPrefix(`/`)
+      kind: Rule
+      services:
+        - name: media-engine
+          port: 80

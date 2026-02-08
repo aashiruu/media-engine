@@ -1,12 +1,13 @@
-FROM python:3.9-slim
+FROM python:3.10-slim
 
 WORKDIR /app
 
-# Removed heavy ffmpeg install for now
-# RUN apt-get update && apt-get install -y ffmpeg
+# SKIP ffmpeg to save time. We only install curl.
+RUN apt-get update && apt-get install -y curl
 
-# Install python dependencies
-RUN pip install fastapi uvicorn psycopg2-binary redis celery yt-dlp
+# Install python dependencies (force upgrade yt-dlp)
+RUN pip install --no-cache-dir fastapi uvicorn psycopg2-binary redis celery boto3
+RUN pip install --no-cache-dir --upgrade yt-dlp
 
 # Copy code
 COPY main.py .

@@ -2,12 +2,12 @@ FROM python:3.10-slim
 
 WORKDIR /app
 
-# SKIP ffmpeg to save time. We only install curl.
-RUN apt-get update && apt-get install -y curl
+# Install curl (for healthchecks)
+RUN apt-get update && apt-get install -y curl && apt-get clean
 
-# Install python dependencies (force upgrade yt-dlp)
-RUN pip install --no-cache-dir fastapi uvicorn psycopg2-binary redis celery boto3
-RUN pip install --no-cache-dir --upgrade yt-dlp
+# Install python dependencies
+# faster-whisper is the magic library
+RUN pip install --no-cache-dir fastapi uvicorn psycopg2-binary redis celery boto3 yt-dlp faster-whisper
 
 # Copy code
 COPY main.py .

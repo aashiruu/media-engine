@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: media-engine
+  labels:
+    app: media-engine
+spec:
+  selector:
+    app: media-engine
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      name: http  # <--- THIS IS THE MAGIC KEY

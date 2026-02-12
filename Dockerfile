@@ -2,12 +2,11 @@ FROM python:3.10-slim
 
 WORKDIR /app
 
-# Install curl (for healthchecks)
+# Install curl
 RUN apt-get update && apt-get install -y curl && apt-get clean
 
-# Install python dependencies
-# faster-whisper is the magic library
-RUN pip install --no-cache-dir fastapi uvicorn psycopg2-binary redis celery boto3 yt-dlp faster-whisper
+# Install dependencies (Added prometheus-fastapi-instrumentator)
+RUN pip install --no-cache-dir fastapi uvicorn psycopg2-binary redis celery boto3 yt-dlp prometheus-fastapi-instrumentator
 
 # Copy code
 COPY main.py .

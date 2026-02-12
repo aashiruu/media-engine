@@ -1,13 +1,18 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from celery import Celery
+from prometheus_fastapi_instrumentator import Instrumentator # NEW
 import psycopg2
 import os
 import yt_dlp
 import boto3
-import time  # To simulate AI processing time
+import time
 
 app = FastAPI()
+
+# --- OBSERVABILITY SETUP (NEW) ---
+# This automatically tracks requests, errors, and latency
+Instrumentator().instrument(app).expose(app)
 
 # --- Config ---
 celery_app = Celery(
@@ -103,14 +108,9 @@ def process_video_task(job_id, url):
             video_filename = f'/tmp/{job_id}-video.mp4'
 
         # --- 2. Transcribe Audio (SIMULATED) ---
-        print("Starting Safety Transcription...")
-        
-        # Simulate work (Sleep for 5 seconds)
-        time.sleep(5)
-        
-        # Hardcoded result (The Mock)
-        transcript_text = "We're no strangers to love. You know the rules and so do I. A full commitment's what I'm thinking of. You wouldn't get this from any other guy. I just wanna tell you how I'm feeling. Gotta make you understand. Never gonna give you up. Never gonna let you down. Never gonna run around and desert you."
-        
+        print("Starting Mock Transcription...")
+        time.sleep(3) # Simulate work
+        transcript_text = "We're no strangers to love. You know the rules and so do I. A full commitment's what I'm thinking of. You wouldn't get this from any other guy."
         print(f"Transcription complete: {len(transcript_text)} chars")
 
         # 3. Upload & Cleanup
@@ -129,7 +129,6 @@ def process_video_task(job_id, url):
         audio_s3 = f"s3://{BUCKET_NAME}/{audio_key}"
         
         update_job_status(job_id, "completed", title, duration, video_s3, audio_s3, transcript_text)
-        
         return f"Finished {job_id}: {title}"
         
     except Exception as e:
@@ -140,7 +139,7 @@ def process_video_task(job_id, url):
 # --- API ---
 @app.get("/")
 def read_root():
-    return {"status": "Media Engine Online", "version": "v14-mock"}
+    return {"status": "Media Engine Online", "version": "v15-metrics"}
 
 @app.post("/videos")
 def create_video_job(video: VideoRequest):

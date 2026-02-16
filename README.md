@@ -18,6 +18,13 @@ The system follows a decoupled, event-driven architecture:
 * **Language:** Python 3.10 (FastAPI, Celery)
 * **Infrastructure:** Defined as Code (IaC)
 
+## CI/CD Automation
+The project implements a **Continuous Integration** pipeline using **GitHub Actions**.
+* **Trigger:** Push to `main` branch.
+* **Build:** Automatically builds the Docker image.
+* **Security:** Authenticates with Docker Hub using encrypted Repository Secrets.
+* **Publish:** Pushes the versioned artifact to Docker Hub (`famouswealth/media-engine`).
+
 ## Engineering Challenges Solved
 * **Resilience:** Implemented "Blue/Green" style database migration to resolve "Zombie" resource conflicts during deployment.
 * **Scalability:** Configured Horizontal Pod Autoscalers (HPA) to scale workers based on CPU load.
@@ -49,3 +56,5 @@ curl http://localhost:8080/
 <img width="1347" height="378" alt="image" src="https://github.com/user-attachments/assets/f4462602-973c-4b89-b881-d83ecde2c59d" />
 
 <img width="1348" height="337" alt="image" src="https://github.com/user-attachments/assets/4a3dfebf-fd64-4be3-b6d6-b2b83742d4f4" />
+
+<img width="1332" height="628" alt="image" src="https://github.com/user-attachments/assets/a778319e-eca4-4312-b74a-fce0dd10bed3" />

@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: media-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: media-worker
+  template:
+    metadata:
+      labels:
+        app: media-worker
+    spec:
+      containers:
+      - name: media-worker
+        image: media-engine:v15
+        command: ["celery", "-A", "main.celery_app", "worker", "--loglevel=info"]
+        resources:
+          requests:
+            cpu: "5m"        # <--- EXTREMELY LOW (4m usage will trigger 80%)
+            memory: "100Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+        env:
+        - name: DB_HOST
+          value: "postgres-service"
+        - name: DB_PASSWORD
+          value: "supersecretpassword"

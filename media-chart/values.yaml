@@ -1,0 +1,13 @@
+replicaCount: 1
+image:
+  repository: media-engine
+  tag: "v15"
+  pullPolicy: Never
+service:
+  type: ClusterIP
+  port: 80
+postgres:
+  host: "media-db-service"
+  password: "supersecretpassword"
+redis:
+  host: "redis-master"

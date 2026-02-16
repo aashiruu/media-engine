@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: media-db-config
+data:
+  init.sql: |
+    CREATE DATABASE media;

@@ -3,6 +3,26 @@
 A scalable, microservices-based video processing platform engineered to handle high-concurrency media workloads. Deployed on **Kubernetes** using **Helm Charts** for reproducible infrastructure.
 
 ## Architecture
+
+```mermaid
+flowchart TD
+    A[Client] -->|upload request| B["Media Engine API<br/>(FastAPI)"]
+    B -->|enqueue task| C[Redis<br/>Task Queue]
+    C -->|consume| D["Celery Workers<br/>(video processing)"]
+    D -->|store metadata| E[(PostgreSQL)]
+    D -->|store video file| F[MinIO<br/>S3-compatible storage]
+    B -->|status check| E
+
+    G[Prometheus] -.->|scrape /metrics| B
+    G -.->|scrape /metrics| D
+    G --> H[Grafana<br/>Dashboards]
+
+    style E fill:#4169E1,color:#fff
+    style F fill:#C72E49,color:#fff
+    style G fill:#E6522C,color:#fff
+    style H fill:#F46800,color:#fff
+```
+
 The system follows a decoupled, event-driven architecture:
 * **Media Engine (API):** Python (FastAPI) service handling upload requests and serving status checks.
 * **Worker Nodes:** Scalable background workers (Celery) processing video tasks asynchronously.
